@@ -2,11 +2,9 @@ CC = g++
 LIBDIR  = ~/projects/c++/algo/lib
 LIBTOOL = libtool
 CDEFS   = -DNDEBUG
-CFLAGS	= -Wall -march=athlon64 -g -std=c++0x  \
-          -I/home/tgee/projects/c++/algo/src \
-          -I/usr/include/boost-1_40_0  -I/usr/include/boost-sandbox \
-          -I/usr/include/mysql -I/usr/include/mysql++ \
-          -I/home/tgee/projects/external/libssrckdtree-1.0.0
+CFLAGS	= -Wall -march=athlon64 -g -std=c++0x -fpermissive  \
+          -I/usr/include/boost  -I/usr/include/boost-sandbox \
+          -I/usr/include/ietl
 LFLAGS	= 
 SRCS	= cmds.cpp \
           smds.cpp \
@@ -20,7 +18,6 @@ SRCS	= cmds.cpp \
           stress.cpp \
           euclidean_distance.cpp \
           guttman.cpp \
-          cpmds.cpp 
 #          wmds.cpp 
 #          lmds.cpp \
 #          imds.cpp \

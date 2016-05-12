@@ -1,0 +1,2 @@
+sudo apt-get install libgsl0-dev #gsl 
+svn co http://svn.boost.org/svn/boost/sandbox/numeric_bindings #numeric bindings

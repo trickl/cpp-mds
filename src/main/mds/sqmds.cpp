@@ -1,9 +1,8 @@
-#include "sqpmds.h"
-#include <mds/cha96mds.h>
-#include <mds/stress.h>
+#include "sqmds.h"
+#include "cha96mds.h"
+#include "stress.h"
 #include <stdexcept>
 #include <set>
-#include <map>
 #include <algorithm>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -13,16 +12,7 @@
 using namespace std;
 using namespace boost::numeric::ublas;
 
-struct pivot
-{
-   pivot(unsigned int offset) : point_offset(offset) {};
-   unsigned int point_offset;
-   multimap<double, unsigned int> buckets;
-
-   bool operator == (const pivot& rhs) const { return point_offset == rhs.point_offset; } 
-};
-
-void sqpmds(const symmetric_matrix<double, lower, column_major> &R,
+void sqmds(const symmetric_matrix<double, lower, column_major> &R,
           matrix<double, column_major> &X,
           unsigned int p,
           gsl_rng* rng)
@@ -34,17 +24,14 @@ void sqpmds(const symmetric_matrix<double, lower, column_major> &R,
    const unsigned int n = R.size1();
    const unsigned int sample_size = 10 + sqrt(n);
    const unsigned int interp_size = 3 + sqrt(sample_size);
-   const unsigned int pivots_size = 2 * p;
    const unsigned int v_max = 5;
    const unsigned int s_max = 10;
    const unsigned int max_search_iterations = 7;
    const double spring_constant = 1.0; // How many iterations required to correct a distance
 
-
    std::vector<unsigned int> samples; 
    set<unsigned int> sample_set; 
    set<unsigned int> interp_subset;
-   std::vector<pivot> pivots;
 
    // Select an O(N^1/2) sample of the original subset
    while (sample_set.size() < sample_size)
@@ -55,15 +42,6 @@ void sqpmds(const symmetric_matrix<double, lower, column_major> &R,
    } 
    copy(sample_set.begin(), sample_set.end(), back_inserter(samples));
 
-   // Select the pivots as a random sample of S
-   while (pivots.size() < pivots_size)
-   {
-      // No repeats and not the nearest neighbour x
-      unsigned int j = gsl_rng_uniform_int(rng, sample_size);
-      pivot p(j);
-      if (find(pivots.begin(), pivots.end(), p) == pivots.end()) pivots.push_back(p);
-   } 
-
    symmetric_matrix<double, lower, column_major> S(sample_size);
    for (unsigned int i = 0; i < sample_size; ++i) 
    {
@@ -72,32 +50,6 @@ void sqpmds(const symmetric_matrix<double, lower, column_major> &R,
          S(i, j) = R(samples[i], samples[j]);
       }
    } 
-
-   // Populate the pivots
-   for (std::vector<pivot>::iterator itr = pivots.begin(), end = pivots.end(); itr != end; ++itr) 
-   {
-      // Go through all the points ordering their distance from the pivot
-      map<double, unsigned int, greater<double> > ordered_distances;
-      for (unsigned int i = 0; i < sample_size; ++i) 
-      {
-         ordered_distances.insert(make_pair(R(itr->point_offset, samples[i]), samples[i]));
-      }
-
-      // Allocate points into the pivots      
-      double boundary_distance = numeric_limits<double>::infinity(); 
-      unsigned int bucket_size = 0;
-      const unsigned int max_bucket_size = pow(n, 0.25);
-      for (map<double, unsigned int>::const_iterator d_itr = ordered_distances.begin(), d_end = ordered_distances.end(); d_itr != d_end; ++d_itr) 
-      {
-         if (bucket_size == max_bucket_size)
-         {
-            boundary_distance = d_itr->first; 
-            bucket_size = 0;
-         }
-         itr->buckets.insert(make_pair(boundary_distance, d_itr->second));
-         bucket_size++;
-      }
-   }
 
    // Start by running the Chalmer's 96 algorithm on the small subset
    matrix<double, column_major> XS;
@@ -115,38 +67,18 @@ void sqpmds(const symmetric_matrix<double, lower, column_major> &R,
    {
       if (!binary_search(samples.begin(), samples.end(), i))
       { 
-         // Find the nearest neighbour to i in S (using pivots)
+         // Find the nearest neighbour to i in S (brute force)
          unsigned int x = 0; 
          double nearest_distance = numeric_limits<double>::infinity();
-         for (std::vector<pivot>::const_iterator itr = pivots.begin(), end = pivots.end(); itr != end; ++itr) 
-         {
-            multimap<double, unsigned int>::const_iterator range_itr = itr->buckets.lower_bound(R(itr->point_offset, i));
-            //cout << "Query: " << R(itr->point_offset, i) << ", Key: " << range_itr->first << endl;
-            for (double key = range_itr->first; range_itr != itr->buckets.end() && range_itr->first <= key; ++range_itr)
-            { 
-               double distance = R(i, range_itr->second);
-               if (distance < nearest_distance) 
-               {
-                  nearest_distance = distance;
-                  x = range_itr->second;
-               }
-            }
-         }
-/*
-         unsigned int x_brute = 0; 
-         nearest_distance = numeric_limits<double>::infinity();
          for (unsigned int j = 0; j < sample_size; ++j) 
          {
             double distance = R(i, samples[j]);
             if (distance < nearest_distance) 
             {
                nearest_distance = distance;
-               x_brute = samples[j];
+               x = samples[j];
             }
          }
-
-         cout << "Nearest neighbour - pivots: " << x << ", brute: " << x_brute << endl;
-*/
 
          // Select a random sample of the original subset S 
          interp_subset.clear();

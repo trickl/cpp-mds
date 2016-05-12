@@ -2,11 +2,11 @@
 #include <stdexcept>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/operation.hpp>
-#include <boost/numeric/bindings/lapack/gesvd.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesvd.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/symmetric.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 
 using namespace std;
 using namespace boost::numeric::ublas;
@@ -46,7 +46,7 @@ void cmds(const symmetric_matrix<double, lower, column_major> &R,
    // Use svd to find B = ELE'
    matrix<double, column_major> ET(B.size2(), B.size2()), E(B.size1(), B.size1());
    boost::numeric::ublas::vector<double> L(B.size1());
-   lapack::gesvd(B, L, E, ET);
+   lapack::gesvd('A', 'A', B, L, E, ET);
 
    // Can now use B to solve for the co-ordinates X = EL^0.5 (XX' = B)
    X.resize(R.size1(), p);

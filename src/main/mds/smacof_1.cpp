@@ -1,8 +1,8 @@
 #include "smacof_1.h"
 #include <stdexcept>
 #include <climits>
-#include <mds/stress.h>
-#include <mds/cmds.h>
+#include "stress.h"
+#include "cmds.h"
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/symmetric.hpp>
 

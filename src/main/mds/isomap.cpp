@@ -6,7 +6,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/symmetric.hpp>
-#include <mds/cmds.h>
+#include "cmds.h"
 
 using namespace std;
 using namespace boost;
