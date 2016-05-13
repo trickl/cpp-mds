@@ -23,6 +23,6 @@ void rkisomap(const boost::numeric::ublas::symmetric_matrix<double, boost::numer
               boost::numeric::ublas::symmetric_matrix<double, boost::numeric::ublas::lower, boost::numeric::ublas::column_major> &S,
               unsigned int k,
               double m = 2.,
-              double flow_intolerance = 0.01);
+              double flow_intolerance = 0.05);
 
 #endif

@@ -44,7 +44,7 @@ void cmds(const symmetric_matrix<double, lower, column_major> &R,
    matrix<double, column_major> B = -0.5 * prec_prod(J, prec_prod<matrix<double, column_major> >(D, J));
 
    // Use svd to find B = ELE'
-   matrix<double, column_major> ET(B.size2(), B.size2()), E(B.size1(), B.size1());
+   matrix<double, column_major> E(B.size1(), B.size1()), ET(B.size2(), B.size2());
    boost::numeric::ublas::vector<double> L(B.size1());
    lapack::gesvd('A', 'A', B, L, E, ET);
 

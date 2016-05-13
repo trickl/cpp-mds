@@ -30,7 +30,7 @@ void rkisomap(const symmetric_matrix<double, lower, column_major> &R,
 
    // Create a neighbourhood graph using all the known dissimilarities
    // Directed, as we create both an in flow and out flow for each edge (for robustness)
-   typedef adjacency_list< listS, vecS, undirectedS, no_property, property< edge_weight_t, double, property< boost::edge_flow_t, int > >, disallow_parallel_edge_tag> graph_t;
+   typedef adjacency_list< listS, vecS, directedS, no_property, property< edge_weight_t, double, property< boost::edge_flow_t, int > >, disallow_parallel_edge_tag> graph_t;
    typedef graph_t::vertex_descriptor vertex_t;
    typedef graph_t::edge_descriptor edge_t;
    graph_t graph(n);
@@ -41,7 +41,7 @@ void rkisomap(const symmetric_matrix<double, lower, column_major> &R,
    for (unsigned int i = 0; i < n; ++i)
    {
       // Sort the nearest neighbours to this point
-      map<double, unsigned int> sorted_distances;
+      multimap<double, unsigned int> sorted_distances;
       for (unsigned int j = 0; j < n; ++j)
       {
          if (i != j) sorted_distances.insert(std::pair<double, unsigned int>(R(i, j), j));
@@ -55,12 +55,9 @@ void rkisomap(const symmetric_matrix<double, lower, column_major> &R,
          edge_t e;
          bool exists;
 
-         tie(e, exists) = add_edge(min(i, itr->second), max(i, itr->second), graph);
-         if (exists)
-         {
-            weight_map[e] = pow(R(i, itr->second), m);
-            flow_map[e]   = 0;
-         }  
+         tie(e, exists) = add_edge(i, itr->second, graph);
+         weight_map[e] = pow(R(i, itr->second), m);
+         flow_map[e]   = 0;
       }
    }
 
@@ -104,7 +101,7 @@ void rkisomap(const symmetric_matrix<double, lower, column_major> &R,
             {
                edge_t e;
                bool exists;
-               tie(e, exists)  = edge(j, vertex_index_map[predecessors[j]], graph);
+               tie(e, exists)  = edge(vertex_index_map[predecessors[j]], j, graph);
 
                // Number of shortest paths through this edge
                if (exists)
@@ -121,11 +118,12 @@ void rkisomap(const symmetric_matrix<double, lower, column_major> &R,
       graph_traits<graph_t>::edge_iterator e_i, e_end;
       for (tie(e_i, e_end) = edges(graph); e_i != e_end; ++e_i)
       {
-         flow_array[edge_index++] = flow_map[*e_i];
+         int edge_flow = flow_map[*e_i];
+         flow_array[edge_index++] = edge_flow;
       }
 
-      double flow_sigma = gsl_stats_int_sd(flow_array, 1, n);
-      double flow_mean  = gsl_stats_int_mean(flow_array, 1, n);
+      double flow_sigma = gsl_stats_int_sd(flow_array, 1, edge_index);
+      double flow_mean  = gsl_stats_int_mean(flow_array, 1, edge_index);
 
       list<edge_t> edges_pending_removal;
       for (tie(e_i, e_end) = edges(graph); e_i != e_end; ++e_i)

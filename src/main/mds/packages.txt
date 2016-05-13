@@ -1,2 +1,3 @@
-sudo apt-get install libgsl0-dev #gsl 
-svn co http://svn.boost.org/svn/boost/sandbox/numeric_bindings #numeric bindings
+sudo apt-get install libgsl0-dev # gsl 
+sudo apt-get install liblapack-dev # lapack
+svn co http://svn.boost.org/svn/boost/sandbox/numeric_bindings # numeric bindings

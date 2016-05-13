@@ -5,7 +5,7 @@ CFLAGS	= -Wall -g -I../../main -I/usr/include/boost
 LFLAGS	= -L/home/tgee/projects/trickl/cpp-mds/lib -lmds -lgsl -llapack
 SRCS	= main.cpp 
 
-TARGET	= isomap
+TARGET	= rkisomap
 OBJS	= $(SRCS:.cpp=.o)
 
 default : all

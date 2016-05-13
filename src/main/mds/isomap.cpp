@@ -21,6 +21,7 @@ void isomap(const symmetric_matrix<double, lower, column_major> &R,
 
    // Create a neighbourhood graph using all the known dissimilarities
    // Undirected as we assume symmetrical dissimlarities and we need a weight for each edge
+   // No parallel edges allowed
    typedef adjacency_list< listS, vecS, undirectedS, no_property, property< edge_weight_t, double>, disallow_parallel_edge_tag> graph_t;
    typedef graph_t::vertex_descriptor vertex_t;
    typedef graph_t::edge_descriptor edge_t;
@@ -31,7 +32,7 @@ void isomap(const symmetric_matrix<double, lower, column_major> &R,
    for (unsigned int i = 0; i < n; ++i)
    {
       // Sort the nearest neighbours to this point
-      map<double, unsigned int> distance_index_map;
+      multimap<double, unsigned int> distance_index_map;
       for (unsigned int j = 0; j < n; ++j)
       {
          if (i != j) distance_index_map.insert(std::pair<double, unsigned int>(R(i, j), j));

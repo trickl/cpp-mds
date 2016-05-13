@@ -1,4 +1,4 @@
-#include <mds/isomap.h>
+#include <mds/rkisomap.h>
 #include <mds/cmds.h>
 #include <mds/stress.h>
 #include <mds/euclidean_distance.h>
@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 {
    // Load feature data from file 
    matrix<double, column_major> X;
-   ifstream fin("swiss_roll.dat");
+   ifstream fin("swiss_roll_with_noise.dat");
    fin >> csv >> X;
    
    try
@@ -25,14 +25,14 @@ int main(int argc, char** argv)
 
       matrix<double, column_major> Xscaled;
       symmetric_matrix<double, lower, column_major> S(X.size1());
-      isomap(R, S, 5);
+      rkisomap(R, S, 5, 2, 0.05);
 
-      ofstream fout_tmp("swiss_roll_isomap_S.dat");
+      ofstream fout_tmp("swiss_roll_rkisomap_S.dat");
       fout_tmp << csv << S;
 
       cmds(S, 2, Xscaled);
 
-      ofstream fout("swiss_roll_isomap.dat");
+      ofstream fout("swiss_roll_rkisomap.dat");
       fout << csv << Xscaled;
    }
    catch (exception &e)

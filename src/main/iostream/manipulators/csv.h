@@ -7,7 +7,6 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
-#include <geometry/point/point.h>
 
 class csv_ostream_manipulator
 {
@@ -16,15 +15,6 @@ public:
 
    // Copy manipulator params
    csv_ostream_manipulator &copy(const csv_ostream_manipulator& rhs) {return *this;};
-
-   std::ostream& operator <<(const std::vector<point> &data)
-   {
-      for (unsigned int i = 0; i < data.size(); i++)
-      {
-         _os << data[i].x << ", " << data[i].y << std::endl;
-      }
-      return this->_os;
-   }
 
    template<class T>
    std::ostream& operator <<(const std::vector<T> &data)

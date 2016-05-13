@@ -1,5 +1,5 @@
 CC = g++
-LIBDIR  = ~/projects/c++/algo/lib
+LIBDIR  = ~/projects/trickl/cpp-mds/lib
 LIBTOOL = libtool
 CDEFS   = -DNDEBUG
 CFLAGS	= -Wall -march=athlon64 -g -std=c++0x -fpermissive  \
