@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
       matrix<double, column_major> Xscaled;
       symmetric_matrix<double, lower, column_major> S(X.size1());
-      rkisomap(R, S, 5, 2, 0.05);
+      rkisomap(R, S, 5, 2, 0.04);
 
       ofstream fout_tmp("swiss_roll_rkisomap_S.dat");
       fout_tmp << csv << S;

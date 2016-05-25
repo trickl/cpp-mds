@@ -1,8 +1,8 @@
 CC = g++
 LIBTOOL = libtool
 CDEFS   = 
-CFLAGS	= -Wall -g -I/home/tgee/projects/c++/algo/src -I/usr/include/boost-1_40_0
-LFLAGS	= -L/home/tgee/projects/c++/algo/lib -lmds -lgsl -liosmanip -llapack
+CFLAGS	= -Wall -g -I../../main -I/usr/include/boost
+LFLAGS	= -L/home/tgee/projects/trickl/cpp-mds/lib -lmds -lgsl -llapack
 SRCS	= main.cpp 
 
 TARGET	= smds

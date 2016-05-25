@@ -1,11 +1,11 @@
 CC = g++
 LIBTOOL = libtool
 CDEFS   = 
-CFLAGS	= -Wall -g -I../../main -I/usr/include/boost
+CFLAGS	= -Wall -g -fpermissive -I../../main -I/usr/include/boost
 LFLAGS	= -L/home/tgee/projects/trickl/cpp-mds/lib -lmds -lgsl -llapack
 SRCS	= main.cpp 
 
-TARGET	= lmds
+TARGET	= lanczos
 OBJS	= $(SRCS:.cpp=.o)
 
 default : all
