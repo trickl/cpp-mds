@@ -122,14 +122,17 @@ void rkisomap(const symmetric_matrix<double, lower, column_major> &R,
          flow_array[edge_index++] = edge_flow;
       }
 
-      double flow_sigma = gsl_stats_int_sd(flow_array, 1, edge_index);
+      double flow_var = gsl_stats_int_variance(flow_array, 1, edge_index);
       double flow_mean  = gsl_stats_int_mean(flow_array, 1, edge_index);
+      double gamma_shape = (flow_mean * flow_mean) / flow_var;
+      double gamma_scale = flow_var / flow_mean;
 
       list<edge_t> edges_pending_removal;
       for (tie(e_i, e_end) = edges(graph); e_i != e_end; ++e_i)
       {
          // Cumulative distribution function P
-         double cumulative_density = gsl_cdf_gaussian_P(flow_map[*e_i] - flow_mean, flow_sigma);
+         int edge_flow = flow_map[*e_i];
+         double cumulative_density = gsl_cdf_gamma_P(edge_flow, gamma_shape, 1.0 / gamma_scale);
 
          if (flow_intolerance > 1 - cumulative_density)
          {
