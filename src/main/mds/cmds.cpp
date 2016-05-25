@@ -46,7 +46,7 @@ void cmds(const symmetric_matrix<double, lower, column_major> &R,
    // Use svd to find B = ELE'
    matrix<double, column_major> E(B.size1(), B.size1()), ET(B.size2(), B.size2());
    boost::numeric::ublas::vector<double> L(B.size1());
-   lapack::gesvd('A', 'A', B, L, E, ET);
+   lapack::gesvd('S', 'S', B, L, E, ET);
 
    // Can now use B to solve for the co-ordinates X = EL^0.5 (XX' = B)
    X.resize(R.size1(), p);
