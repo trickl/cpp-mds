@@ -14,9 +14,8 @@
 // X are the projected points
 // s is the number of submatrices to divide R 
 void lmds(const boost::numeric::ublas::symmetric_matrix<double, boost::numeric::ublas::lower, boost::numeric::ublas::column_major> &R,
-          const boost::numeric::ublas::symmetric_matrix<double, boost::numeric::ublas::lower, boost::numeric::ublas::column_major> &W,
-          boost::numeric::ublas::matrix<double> &X, 
+          boost::numeric::ublas::matrix<double, boost::numeric::ublas::column_major> &X, 
           unsigned int p,
-          double variance_tolerance);
+          unsigned int subdivisions);
 
 #endif
