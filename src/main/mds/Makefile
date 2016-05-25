@@ -18,6 +18,7 @@ SRCS	= cmds.cpp \
           stress.cpp \
           euclidean_distance.cpp \
           guttman.cpp \
+          lmds.cpp
 #          wmds.cpp 
 #          lmds.cpp \
 #          imds.cpp \
